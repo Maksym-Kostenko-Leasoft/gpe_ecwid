@@ -1,16 +1,26 @@
-name: hello-world
-# on – определяет события, которые запускают воркфлоу
-on: push
+name: Virtuemart GPE plugin sync with EMS Online
+on:
+  push:
+    branches: [ main ]
 jobs:
-  # build – произвольно выбранное имя задания
-  # их может быть больше одного
-  build:
-    # операционная система для работы воркфлоу
+  deploy:
     runs-on: ubuntu-latest
-    steps: # список шагов, которые надо выполнить
-      # экшен, выполняет какую-то задачу
-      # checkout – клонирует репозиторий
-      - uses: actions/checkout@v3
-      # run – произвольная bash-команда
-      # ls -la выведет содержимое текущего репозитория
-      - run: ls -la
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          repository: Maksym-Kostenko-Leasoft/gpe_ecwid
+      - name: checkout
+        run: |
+          git checkout main
+        id: message
+      - name: getting_bank_func_from_remote_repository
+        run: |
+          git clone https://github.com/Maksym-Kostenko-Leasoft/ems-online-ecwid.git
+          cd ems-online-ecwid
+          git checkout bank_func
+          git pull
+          sudo cp -r ./* ../
+          cd ../
+          sudo rm -rf ems-online-ecwid/
+          ls -la
+  
